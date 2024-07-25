@@ -23,8 +23,10 @@
 		"fastify-decorators": "^3.15.1",
 		"fastify-http-errors-enhanced": "^5.0.4",
 		"http-errors-enhanced": "^2.0.8",
+		"nodemailer": "^6.9.14",
 		"pg": "^8.12.0",
 		"reflect-metadata": "^0.2.2",
+		"resend": "^3.5.0",
 		"tsx": "^4.16.2",
 		"ulid": "^2.3.0"
 	},
@@ -32,6 +34,7 @@
 		"@biomejs/biome": "1.8.3",
 		"@types/bcrypt": "^5.0.2",
 		"@types/node": "^20.14.12",
+		"@types/nodemailer": "^6.4.15",
 		"@types/pg": "^8.11.6",
 		"drizzle-kit": "^0.23.0",
 		"typescript": "^5.5.4"
