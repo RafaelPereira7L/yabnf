@@ -5,6 +5,8 @@ import { Controller, GET, POST } from "fastify-decorators";
 import FindByIdUserUseCase from "@useCases/user/user-findbyid.usecase";
 import AuthUserUseCase from "@useCases/user/user-auth.usecase";
 import MailerProvider from "@providers/mailer.provider";
+import QueueJobsProvider from "@providers/queue-jobs.provider";
+import QueueWorkerProvider from "@providers/queue-worker.provider";
 
 @Controller({ route: "/users" })
 export default class UserController {
@@ -14,6 +16,8 @@ export default class UserController {
 	private readonly userFindByIdUseCase: FindByIdUserUseCase;
 	private readonly userAuthUseCase: AuthUserUseCase;
 	private readonly mailProvider: MailerProvider;
+  private readonly queueJobsProvider: QueueJobsProvider;
+  private readonly queueWorkerProvider: QueueWorkerProvider;
 
 	constructor() {
 		this.userRepository = new UserRepository();
@@ -22,6 +26,8 @@ export default class UserController {
 		this.userFindByIdUseCase = new FindByIdUserUseCase(this.userRepository);
 		this.userAuthUseCase = new AuthUserUseCase(this.userRepository);
 		this.mailProvider = new MailerProvider("resend");
+    this.queueJobsProvider = new QueueJobsProvider("test");
+    this.queueWorkerProvider = new QueueWorkerProvider("test");
 	}
 
 	@GET({ url: "/" })
@@ -55,5 +61,16 @@ export default class UserController {
 			html: "<h1>test send mail</h1>",
 			text: "test send mail",
 		});
+	}
+
+  @POST({ url: "/job" })
+	async job(request) {
+    await this.queueJobsProvider.publish("test", { message: "xpto" });
+
+    await this.queueWorkerProvider.consume(async (job) => {
+      console.log(job.data);
+    });
+
+    return { message: "job published and consumed" };
 	}
 }
