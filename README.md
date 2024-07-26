@@ -1,5 +1,8 @@
-## FEATURES
+## yabnf (yet another bad node.js framework)
 
+A node.js backend boilerplate based on fastify.js
+
+features:
 - HANDLE HTTP REQUESTS: DONE
 - DATABASE ORM INTEGRATION: DONE
 - QUEUE JOBS w/ REDIS: DONE
