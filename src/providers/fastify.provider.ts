@@ -10,6 +10,25 @@ const fastify = Fastify({
 		},
 	},
 });
+
+fastify.decorate("authenticate", async (req, reply) => {
+	try {
+		await req.jwtVerify();
+	} catch (error) {
+		reply.status(401).send({
+			statusCode: 401,
+			error: "Unauthorized",
+			message: "Unauthorized",
+		});
+	}
+});
+
+fastify.decorate('foo', {
+  getter () {
+    return 'a getter'
+  }
+})
+
 fastify.register(bootstrap, {
 	directory: `${__dirname}/../http`,
 	mask: /\.controller\./,

@@ -15,6 +15,7 @@
     "rootDir": "./",
     "baseUrl": "./src",
     "paths": {
+      "*": ["src/*"],
       "@entities/*": [
         "entities/*"
       ],
@@ -29,6 +30,9 @@
       ],
       "@http/*": [
         "http/*"
+      ],
+      "@config/*": [
+        "config/*"
       ],
     },
     "esModuleInterop": true,
