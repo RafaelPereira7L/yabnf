@@ -7,9 +7,11 @@ import AuthUserUseCase from "@useCases/user/user-auth.usecase";
 // import QueueJobsProvider from "@providers/queue-jobs.provider";
 // import QueueWorkerProvider from "@providers/queue-worker.provider";
 import { autoInjectable, inject } from "tsyringe";
+import { AuthGuard, Guest } from "@http/middlewares/auth.middleware";
 
 @Controller({ route: "/users" })
 @autoInjectable()
+@AuthGuard()
 export default class UserController {
 	// private readonly mailProvider: MailerProvider;
 	// private readonly queueJobsProvider: QueueJobsProvider;
@@ -22,7 +24,7 @@ export default class UserController {
 		private userCreateUseCase: CreateUserUseCase,
 		@inject(FindByIdUserUseCase)
 		private userFindByIdUseCase: FindByIdUserUseCase,
-		// @inject(AuthUserUseCase) private userAuthUseCase: AuthUserUseCase,
+		@inject(AuthUserUseCase) private userAuthUseCase: AuthUserUseCase,
 	) {
 		// this.mailProvider = new MailerProvider("resend");
 		// this.queueJobsProvider = new QueueJobsProvider("test");
@@ -46,11 +48,14 @@ export default class UserController {
 		return this.userCreateUseCase.execute(body);
 	}
 
-	// @POST({ url: "/auth" })
-	// async auth(request) {
-	// 	const { body } = request;
-	// 	return this.userAuthUseCase.execute(body);
-	// }
+	@POST({ url: "/auth" })
+	@Guest()
+	async auth(request) {
+		const { body } = request;
+		const token = await this.userAuthUseCase.execute(body);
+
+		return { token };
+	}
 
 	// @POST({ url: "/test-mail" })
 	// async mail(request) {

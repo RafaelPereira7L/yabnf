@@ -1,7 +1,9 @@
 import type { User } from '@entities/user.entity';
 import * as bcrypt from 'bcrypt'
 import fastify from './fastify.provider';
+import { AutoInjectable } from '@config/decorators/auto-injectable.decorator';
 
+@AutoInjectable()
 export default class HashProvider {
   async hash(value: string) {
     return bcrypt.hash(value, 10);

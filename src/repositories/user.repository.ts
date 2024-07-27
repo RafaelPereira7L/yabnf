@@ -1,7 +1,6 @@
 import { type UserDTO, users, type User } from "@entities/user.entity";
 import { db } from "@providers/database.provider";
 
-// @Repository()
 export default class UserRepository implements BaseRepository<User> {
 	private readonly db: typeof db;
 
@@ -24,12 +23,9 @@ export default class UserRepository implements BaseRepository<User> {
 	}
 
 	async getByEmail(email: string): Promise<User | null> {
-		return (
-			(await db.query.users.findFirst({
-				where: (users, { eq }) => eq(users.email, email),
-				columns: { password: false },
-			})) as User || null
-		);
+		return await db.query.users.findFirst({
+			where: (users, { eq }) => eq(users.email, email),
+		}) as User;
 	}
 
 	async create(data: UserDTO): Promise<string> {
