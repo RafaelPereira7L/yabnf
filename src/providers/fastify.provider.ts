@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import { bootstrap } from "fastify-decorators";
 import fastifyHttpErrorsEnhanced from 'fastify-http-errors-enhanced'
 import fastifyJwt from "@fastify/jwt";
+import fastifySwagger from "@fastify/swagger";
 
 const fastify = Fastify({
 	logger: {
@@ -11,6 +12,32 @@ const fastify = Fastify({
 	},
 });
 
+fastify.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'yabnf.ts',
+      version: '1.0.0',
+    },
+		components: {
+			securitySchemes: {
+				Authorization: {
+					type: 'http',
+					scheme: 'bearer',
+					bearerFormat: 'JWT',
+				},
+			}
+		}
+  },
+})
+
+fastify.register(require('@scalar/fastify-api-reference'), {
+  routePrefix: '/reference',
+  configuration: {
+    spec: {
+      content: () => fastify.swagger(),
+    },
+  },
+})
 
 fastify.register(bootstrap, {
 	directory: `${__dirname}/../http`,
@@ -38,5 +65,6 @@ fastify.setErrorHandler((error, _, reply) => {
 fastify.get("/health", async function handler(request, reply) {
 	return { hello: "world" };
 });
+
 
 export default fastify;
