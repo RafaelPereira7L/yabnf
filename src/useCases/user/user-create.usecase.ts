@@ -1,5 +1,6 @@
 import { AutoInjectable } from "@config/decorators/auto-injectable.decorator";
-import type { UserDTO } from "@entities/user.entity";
+import { Validate } from "@config/decorators/validator.decorator";
+import { UserSchema, type UserDTO } from "@entities/user.entity";
 import HashProvider from "@providers/hash.provider";
 import type UserRepository from "@repositories/user.repository";
 import { BadRequestError } from 'http-errors-enhanced'
@@ -11,6 +12,7 @@ export default class CreateUserUseCase {
 
 	constructor(@inject("UserRepository") private userRepository: UserRepository) {}
 
+	@Validate(UserSchema)
 	async execute(data: UserDTO) {
 		const user = await this.userRepository.getByEmail(data.email)
 

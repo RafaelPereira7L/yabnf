@@ -1,5 +1,6 @@
-import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
+import { createInsertSchema } from 'drizzle-zod';
 
 export const users = pgTable("users", {
 	id: text("id")
@@ -14,3 +15,8 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type UserDTO = typeof users.$inferInsert;
+export const UserSchema = createInsertSchema(users, {
+	fullName: (schema) => schema.fullName.min(1).max(60),
+	email: (schema) => schema.email.min(6).max(256).email(),
+	password: (schema) => schema.password.min(6).max(256),
+});

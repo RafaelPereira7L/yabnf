@@ -43,9 +43,11 @@ export default class UserController {
 	}
 
 	@POST({ url: "/" })
-	async create(request) {
+	@Guest()
+	async create(request, reply) {
 		const { body } = request;
-		return this.userCreateUseCase.execute(body);
+		const user = await this.userCreateUseCase.execute(body);
+		return reply.status(201).send(user);
 	}
 
 	@POST({ url: "/auth" })
