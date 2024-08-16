@@ -30,7 +30,10 @@ fastify.register(fastifySwagger, {
 		},
 	},
 });
-
+fastify.register(bootstrap, {
+	directory: `${__dirname}/../http`,
+	mask: /\.controller\./,
+});
 fastify.register(require("@scalar/fastify-api-reference"), {
 	routePrefix: "/reference",
 	configuration: {
@@ -40,23 +43,20 @@ fastify.register(require("@scalar/fastify-api-reference"), {
 	},
 });
 
-fastify.register(bootstrap, {
-	directory: `${__dirname}/../http`,
-	mask: /\.controller\./,
-});
+
 
 fastify.register(fastifyHttpErrorsEnhanced);
 
 fastify.register(fastifyJwt, {
-	secret: process.env.JWT_SECRET || "",
+	secret: process.env.JWT_SECRET ?? "",
 	sign: {
 		expiresIn: "1d",
 	},
 });
 
 fastify.setErrorHandler((error: HttpError, _, reply) => {
-	reply.status(error.statusCode || 500).send({
-		statusCode: error.statusCode || 500,
+	reply.status(error.statusCode ?? 500).send({
+		statusCode: error.statusCode ?? 500,
 		error: error.name,
 		message: error.message,
 		failedValidations: error.failedValidations,

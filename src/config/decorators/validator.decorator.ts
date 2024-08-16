@@ -6,7 +6,26 @@ export function Validate(schema: ZodSchema) {
 		const originalMethod = descriptor.value;
 
 		descriptor.value = async function (...args) {
-			const data = args[0];
+			let data: object;
+
+			if(args.length === 0) {
+				throw new BadRequestError('Request body is required');
+			}
+
+			if(typeof args[0] !== 'object') {
+				data = args[1] 
+
+				if(Object.keys(data).length === 0) {
+					throw new BadRequestError('Request body is required');
+				}
+
+			} else {
+				data = args[0]
+
+				if(Object.keys(data).length === 0) {
+					throw new BadRequestError('Request body is required');
+				}
+			}
 
 			const result = schema.safeParse(data);
 

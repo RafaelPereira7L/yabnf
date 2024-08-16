@@ -15,8 +15,14 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type UserDTO = typeof users.$inferInsert;
-export const UserSchema = createInsertSchema(users, {
+export const CreateUserSchema = createInsertSchema(users, {
 	fullName: (schema) => schema.fullName.min(1).max(60),
 	email: (schema) => schema.email.min(6).max(256).email(),
 	password: (schema) => schema.password.min(6).max(256),
+});
+
+export const UpdateUserSchema = createInsertSchema(users, {
+	fullName: (schema) => schema.fullName.min(1).max(60).optional(),
+	email: (schema) => schema.email.min(6).max(256).email().optional(),
+	password: (schema) => schema.password.min(6).max(256).optional(),
 });

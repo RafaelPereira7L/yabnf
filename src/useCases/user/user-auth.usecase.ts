@@ -1,15 +1,15 @@
 import { AutoInjectable } from "@config/decorators/auto-injectable.decorator";
 import type { UserDTO } from "@entities/user.entity";
-import type HashProvider from "@providers/hash.provider";
-import type UserRepository from "@repositories/user.repository";
+import HashProvider from "@providers/hash.provider";
+import UserRepository from "@repositories/user.repository";
 import { NotFoundError } from "http-errors-enhanced";
 import { inject } from "tsyringe";
 
 @AutoInjectable()
 export default class AuthUserUseCase {
 	constructor(
-		@inject("UserRepository") private userRepository: UserRepository,
-		@inject("HashProvider") private hashProvider: HashProvider,
+		@inject(UserRepository) private userRepository: UserRepository,
+		@inject(HashProvider) private hashProvider: HashProvider,
 	) {}
 
 	async execute(data: UserDTO) {

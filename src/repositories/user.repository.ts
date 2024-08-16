@@ -1,5 +1,6 @@
 import { type UserDTO, users, type User } from "@entities/user.entity";
 import { db } from "@providers/database.provider";
+import { eq } from "drizzle-orm";
 
 export default class UserRepository implements BaseRepository<User> {
 	private readonly db: typeof db;
@@ -8,9 +9,11 @@ export default class UserRepository implements BaseRepository<User> {
 		this.db = db;
 	}
 
-	async getAll(): Promise<User[]> {
+	async getAll(pagination: Pagination): Promise<User[]> {
 		return await this.db.query.users.findMany({
 			columns: { password: false },
+			limit: pagination.limit || 50,
+			offset: (pagination.limit * (pagination.page - 1)) || 0, 
 		}) as User[];
 	}
 	async getById(id: string): Promise<User | null> {
@@ -33,10 +36,14 @@ export default class UserRepository implements BaseRepository<User> {
 		return user[0].id;
 	}
 
-	update(id: string, data: User): Promise<User> {
-		throw new Error("Method not implemented.");
+	async update(id: string, data: UserDTO): Promise<User> {
+		const user = await this.db.update(users).set(data).where(eq(users.id, id)).returning({ id: users.id })
+
+		return user[0] as User;
 	}
-	delete(id: string): Promise<void> {
-		throw new Error("Method not implemented.");
+	async delete(id: string): Promise<boolean> {
+		const userDeleted = await this.db.delete(users).where(eq(users.id, id)).returning({ deletedId: users.id });
+		
+		return userDeleted.length > 0;
 	}
 }
